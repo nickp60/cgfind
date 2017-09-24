@@ -1,0 +1,26 @@
+#theme: jekyll-theme-minimal
+show_downloads: true
+gems:
+  - jekyll-redirect-from
+
+# Site settings
+title: cgfind
+email: nickp60 at gmail dot com
+description: find and download a prokaryotic reference genome .
+baseurl: ""
+twitter_username: nickwotters
+github_username: nickp60
+linkedin_username: nrwaters
+research_username: Nicholas_Waters2
+# Google services
+# google_analytics: UA-90466463-1
+# Build settings
+# markdown: kramdown
+
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+repository: nickp60/cgfind
+
+url: https://nickp60.github.io/cgfind
