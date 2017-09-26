@@ -7,16 +7,49 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments)};
     gtag('js', new Date());
-    
+
     gtag('config', 'UA-90466463-3');
   </script>
-  
+
+  <!-- Filestack script
+       –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  <script>
+  function copyArrayToClip(array) {
+  // Create a dummy input to copy the string array inside it
+  var dummy = document.createElement("input");
+  // Add it to the document
+  document.body.appendChild(dummy);
+  // Set its ID
+  dummy.setAttribute("id", "dummy_id");
+  // Output the array into it
+  document.getElementById("dummy_id").value=array.join(" ");
+  // Select it
+  dummy.select();
+  // Copy its contents
+  document.execCommand("copy");
+  // Remove it as its not needed anymore
+  document.body.removeChild(dummy);
+			      }
+</script>
+<!-- function download_batch(files) { -->
+    <!-- $.each(files, function(key, value) { -->
+    <!-- $('<iframe></iframe>') -->
+    <!-- .hide() -->
+    <!-- .attr('src', value) -->
+    <!-- .appendTo($('body')) -->
+    <!-- .load(function() { -->
+    <!-- var that = this; -->
+    <!-- setTimeout(function() { -->
+    <!-- $(that).remove(); -->
+    <!-- }, 100); -->
+    <!--         }); -->
+    <!-- }); -->
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
   <title>cgFind</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="complete genome finder" content="">
+  <meta name="nickp60" content="">
 
   <!-- Mobile Specific Metas
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -40,6 +73,19 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.1.2/papaparse.js"></script>
 <script>
+  <!-- var checkboxArr=[]; -->
+  <!-- $('input[type=checkbox]').each(function(x){ -->
+  <!--    checkboxArr.push(x.value); -->
+  <!-- }); -->
+  var ftplist = [];
+  function toggleDloadVis() {
+    var x = document.getElementById('dload_all');
+    if (x.style.display === 'none') {
+        x.style.display = 'block';
+    } else {
+        x.style.display = 'none';
+    }
+  };
   function arrayToTable(tableData) {
       var fields = ["name", "Size..Mb.", "GC.", "Genes", "full_ftp"];
       var field_titles = ["Strain", "Size (Mb)", "% GC", "# Genes", "Download Link*"];
@@ -56,7 +102,7 @@
           var row = '<tr>';
 	  for (var k=0; k<nfields; k++){
 	      if (k == 4){
-		  console.log(rowData[fields[k]]);
+		  ftplist.push(rowData[fields[k]]);
 		  // row += '<td>'+ '<a href="'+ rowData[fields[k]] + '/' + rowData[fields[k]].split(/[\\/]/).pop() + '_genomic.fna.gz" target="_blank">Download</a> </td>';
 		  row += '<td>'+ '<a href="'+ rowData["full_ftp"] +
 		      // '" download="' + rowData["acc"] +
@@ -69,7 +115,9 @@
 	  row += '</tr>';
           table += row;
       });
-      console.log(table);
+      <!-- console.log(table); -->
+      <!-- console.log(ftplist); -->
+      $('#dload_all').prop('disabled', false);
       return table + "</tbody>";
   }
   var csvdata;
@@ -78,13 +126,15 @@
 	 url: "./all_complete_strains.csv",
 	// url: "https://raw.githubusercontent.com/nickp60/riboSeed/master/sample_data/all_complete_strains.csv",
 	 success: function(data){
-	     console.log("loaded dataset from github!")
+	     console.log("loaded dataset")
 	     csvdata = Papa.parse(data, {header: true}).data;
 	 }
     })
   var genus;
   var species;
+  var ftplist;
   function onload() {
+    toggleDloadVis()
   }
   function displaySubset(){
       $('#tslot').empty();
@@ -106,6 +156,7 @@
       console.log("hitcounter: " + hitcounter);
       console.log(subset);
       $('#tslot').append(arrayToTable(subset));
+      toggleDloadVis()
 
   }
   </script>
@@ -123,18 +174,25 @@
         <p>This convenience tool is to provide a simple way to download complete prokaryotic genomes of interest from NCBI. </a>.</p>
       </div>
     </div>
-
+    <!-- Input Buttons -->
     <div class="row">
       <input placeholder="Genus" type="text" name="enter" class="enter" value="" id="genus"/>
       <input placeholder="species" type="text" name="enter" class="enter" value="" id="species"/>
       <input type="button" value="Go!" onclick="displaySubset();"/>
-
     </div>
-       <div id="tslot">
+    <!-- Download Button -->
+    <div id=dload_all>
+      <!-- <input type="button" value="copy All" onclick="download_batch(ftplist);"/> -->
+      <input type="button" value="Copy All Links to Clipboard**" onclick="copyArrayToClip(ftplist);"/>
+    </div>
+    <!-- table that gets populated -->
+    <div id="tslot">
     </div>
     <div class="row"  style='color:lightgrey'>
-        <p >*Note that ALL chromosomes and plasmids will be included in the linked file! </p>
+        <p >*Note: that ALL chromosomes and plasmids will be included in the linked file! </p>
+        <p >** Links will be separated by spaces </p>
     </div>
+    <!-- Troublshooting info -->
     <div class="row"  style='color:lightgrey'>
       <h5>Troubleshooting</h4>
         <p >Try refreshing your browser, check your spelling, or, if all else fails, go to <a href="http://ncbi.nlm.nih.gov/genome/browse/#"> NCBI </a> and do this the proper way </a>.</p>
