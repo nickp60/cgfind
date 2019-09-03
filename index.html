@@ -138,6 +138,7 @@
   }
   function displaySubset(){
       $('#tslot').empty();
+      $('#summaryout').empty();
       genus = document.getElementById('genus').value;
       species = document.getElementById('species').value;
       var hitcounter = 0;
@@ -156,6 +157,7 @@
       console.log("hitcounter: " + hitcounter);
       console.log(subset);
       $('#tslot').append(arrayToTable(subset));
+      $('#summaryout').append( "<p>" +  hitcounter + " results found!</p>");
       toggleDloadVis()
 
   }
@@ -184,6 +186,8 @@
     <div id=dload_all>
       <!-- <input type="button" value="copy All" onclick="download_batch(ftplist);"/> -->
       <input type="button" value="Copy All Links to Clipboard**" onclick="copyArrayToClip(ftplist);"/>
+    </div>
+    <div id="summaryout">
     </div>
     <!-- table that gets populated -->
     <div id="tslot">
