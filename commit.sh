@@ -1,4 +1,5 @@
 #!/bin/bash
+set -eoux
 
 echo "updating database"
 oldnfiles=$(wc -l all_complete_strains.csv)

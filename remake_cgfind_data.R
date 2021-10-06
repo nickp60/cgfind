@@ -1,11 +1,15 @@
 # This script is run to recreate the subset of sthe Prokaryotes.txt file used
 # by cgfind.
+
+# downlaoding takes more than the default 60s, on this connection anyway
+options(timeout=300)
+
 print("Downloading the most updated data from NCBI")
-raw <- read.csv("ftp://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt", header=T, sep="\t", stringsAsFactors=FALSE)
+# old link ftp://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt", header=T, sep="\t", stringsAsFactors=FALSE)
+download.file("https://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prokaryotes.txt", "tmp_prokaryotes.txt")
+raw <- read.csv("tmp_prokaryotes.txt", header=T, sep="\t", stringsAsFactors=FALSE)
 proks <- raw[grepl("Complete", raw$Status), ]
 
-# proks_repr <- read.csv2("ftp://ftp.ncbi.nlm.nih.gov/genomes/GENOME_REPORTS/prok_representative_genomes.txt", header=T, sep="\t", stringsAsFactors=FALSE)
-# proks_repr <- proks_repr[proks_repr$X.Species.genus != "", ]
 print("Parsing data")
 proks$genus <- gsub("(.*?) (.*?) (.*)", "\\1", proks$X.Organism.Name)
 proks$species <- gsub("(.*?) (.*?) (.*)", "\\2", proks$X.Organism.Name)
